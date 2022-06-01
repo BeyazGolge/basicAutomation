@@ -6,27 +6,11 @@ driver.navigate.to 'http://www.lazyautomation.co.uk/lazy1.html'
 driver.manage.window.maximize
 sleep(3)
 
-###################################################################
-#Send text to a textfield
-driver.find_element(:id, 'textfield1').send_keys('OTOMASYONNN')
-###################################################################
 
-
-###################################################################
-#Click on a radiobutton
-driver.find_element(:id, 'a').click
-###################################################################
-
-###################################################################
-#Click on a checkbox
-driver.find_element(:name, 'goodbye').click
-###################################################################
-
-
-###################################################################
-#Click on a text
-#driver.find_element(:link_text, 'This is a link to another website').click
-###################################################################
+driver.find_element(:id, 'textfield1').send_keys('OTOMASYONNN') #Send text to a textfield
+driver.find_element(:id, 'a').click #Click on a radiobutton
+driver.find_element(:name, 'goodbye').click #Click on a checkbox
+#driver.find_element(:link_text, 'This is a link to another website').click #Click on a text
 
 ###################################################################
 #Click on a dropdown button by value
