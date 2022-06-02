@@ -21,12 +21,22 @@ columns.each do |column|
         end
         episode = show.find_element(:class,'show-episode').text
         if !animeName.empty?
-            animes.push([animeName, episode])
+            show.find_element(:class,'show-link').click
+            synopsys = driver.find_element(:id,'description').text
+            driver.navigate().back()
+            animes.push([animeName, episode, synopsys])
         end
+        sleep(1)
     end
 
     animes.each do |anime|
-        puts  + anime[0] + ' '*(longestName-(anime[0].length)+3) + anime[1] 
+        puts   anime[0] + ' '*(longestName-(anime[0].length)+3) + anime[1] 
+        puts '##########################'
+        puts anime[2]
+        puts '##########################'
     end
 end
+
+
+
 
