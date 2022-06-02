@@ -6,7 +6,8 @@ driver.navigate.to 'http://www.lazyautomation.co.uk/lazy1.html'
 driver.manage.window.maximize
 sleep(3)
 
-
+title = driver.find_element(:tag_name,'h1')
+puts title.text
 driver.find_element(:id, 'textfield1').send_keys('OTOMASYONNN') #Send text to a textfield
 driver.find_element(:id, 'a').click #Click on a radiobutton
 driver.find_element(:name, 'goodbye').click #Click on a checkbox
@@ -14,7 +15,7 @@ driver.find_element(:name, 'goodbye').click #Click on a checkbox
 
 ###################################################################
 #Click on a dropdown button by value
-dropdown = driver.find_element(:id, 'options1')
+dropdown = driver.find_element(:id, :options1)
 option = Selenium::WebDriver::Support::Select.new(dropdown)
 option.select_by(:value, 'c')
 ###################################################################
