@@ -34,23 +34,26 @@ class AnimeParser
     end
   end
 
+  def go_to_links(window_handles, anime_links)
+    handles_with_links = window_handles.zip(anime_links)
+    handles_with_links.each do |pairs|
+      @driver.switch_to.window(pairs[0])
+      @driver.navigate.to pairs[1].to_s
+    end
+  end
+
   def window_handles
     @driver.window_handles
   end
 
-  def get_synopsyses(window_handles, original_handler, anime_links)
+  def get_synopsyses(window_handles)
     anime_infos = []
-    window_handles -= original_handler
-    handles_with_links = window_handles.zip(anime_links)
-    puts handles_with_links[0][0]
-    handles_with_links.each do |pairs|
-      @driver.switch_to.window(pairs[0])
-      @driver.navigate.to pairs[1].to_s
-
+    window_handles.each do |window|
+      @driver.switch_to.window(window)
       anime_name = @driver.find_element(:id, 'anime-header-main-title').text
       anime_synopsys = @driver.find_element(:id, 'description').text
-
       anime_infos.push([anime_name, anime_synopsys])
+      @driver.close
     end
     anime_infos
   end
@@ -69,8 +72,7 @@ anime_synopsys_finder = AnimeParser.new
 anime_links = anime_synopsys_finder.get_anime_links
 original_window_handler = anime_synopsys_finder.window_handles
 anime_synopsys_finder.open_new_browsers(anime_links)
-sleep(5)
-new_handles = anime_synopsys_finder.window_handles
-anime_infos = anime_synopsys_finder.get_synopsyses(new_handles, original_window_handler, anime_links)
+new_handles = anime_synopsys_finder.window_handles - original_window_handler
+anime_synopsys_finder.go_to_links(new_handles, anime_links)
+anime_infos = anime_synopsys_finder.get_synopsyses(new_handles)
 anime_synopsys_finder.print_anime_infos(anime_infos)
-sleep(5)
