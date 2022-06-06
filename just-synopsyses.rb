@@ -38,7 +38,8 @@ class AnimeParser
     @driver.window_handles
   end
 
-  def switch_tabs(window_handles, original_handler, anime_links)
+  def get_synopsyses(window_handles, original_handler, anime_links)
+    anime_infos = []
     window_handles -= original_handler
     handles_with_links = window_handles.zip(anime_links)
     puts handles_with_links[0][0]
@@ -46,27 +47,19 @@ class AnimeParser
       @driver.switch_to.window(pairs[0])
       @driver.navigate.to pairs[1].to_s
 
-      puts "Switched to window #{pairs[0]}"
-      puts "Switched to anime #{pairs[1]}"
+      anime_name = @driver.find_element(:id, 'anime-header-main-title').text
+      anime_synopsys = @driver.find_element(:id, 'description').text
+
+      anime_infos.push([anime_name, anime_synopsys])
     end
+    anime_infos
   end
 
-  def longest_name_length(animes)
-    return @longest_name_length unless @longest_name_length.nil?
-
-    @longest_name_length = 0
-    animes.each do |anime|
-      @longest_name_length = anime[2].length if @longest_name_length < anime[2].length
-    end
-    @longest_name_length
-  end
-
-  def print_anime_infos(animes)
-    longest_name_length = longest_name_length(animes)
-    animes.each do |anime|
-      puts anime[2].yellow + ' ' * (longest_name_length - anime[2].length + 3) + anime[3] + ' < ' + anime[0] + ' ' + anime[1]
-      puts anime[4]
-      puts ('_' * longest_name_length + '_' * 24).green
+  def print_anime_infos(anime_infos)
+    anime_infos.each do |info|
+      puts info[0].yellow
+      puts info[1]
+      puts ('_' * 100).green
     end
   end
 end
@@ -75,11 +68,9 @@ anime_synopsys_finder = AnimeParser.new
 
 anime_links = anime_synopsys_finder.get_anime_links
 original_window_handler = anime_synopsys_finder.window_handles
-
 anime_synopsys_finder.open_new_browsers(anime_links)
 sleep(5)
 new_handles = anime_synopsys_finder.window_handles
-
-anime_synopsys_finder.switch_tabs(new_handles, original_window_handler, anime_links)
+anime_infos = anime_synopsys_finder.get_synopsyses(new_handles, original_window_handler, anime_links)
+anime_synopsys_finder.print_anime_infos(anime_infos)
 sleep(5)
-# anime_release_date_finder.print_anime_infos(animes)
