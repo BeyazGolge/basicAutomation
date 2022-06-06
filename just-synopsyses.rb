@@ -2,9 +2,11 @@ class AnimeParser
   require 'selenium-webdriver'
   require 'colorize'
   def get_anime_links
-    @driver = Selenium::WebDriver.for :chrome
-    @driver.navigate.to 'https://animeschedule.net/'
+    caps = Selenium::WebDriver::Remote::Capabilities.chrome
+    caps.page_load_strategy = 'eager'
 
+    @driver = Selenium::WebDriver.for :chrome, desired_capabilities: caps
+    @driver.navigate.to 'https://animeschedule.net/'
     columns = @driver.find_elements(:class, 'timetable-column')
     anime_links = []
     columns.each do |column|
