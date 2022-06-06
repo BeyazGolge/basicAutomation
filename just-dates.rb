@@ -23,33 +23,20 @@ class AnimeParser
       date = column.find_element(:class, 'timetable-column-date-format').text
       shows = column.find_elements(:class, 'timetable-column-show')
       shows.each do |show|
-        wait = Selenium::WebDriver::Wait.new(timeout: 3)
-        puts 'Finding anime name'
         anime_name_element = show.find_element(:class, 'show-title-bar')
         anime_name = anime_name_element.text
-        puts 'Finding episode'
         episode = show.find_element(:class, 'show-episode').text
         next if anime_name.empty?
 
-        puts anime_name
-        puts "Getting synopsys for #{anime_name}"
-        show.find_element(:class, 'show-link').click
-        sleep(4)
-        synopsys_element = @driver.find_element(:id, 'description')
-        synopsys = synopsys_element.text
-        @driver.navigate.back
-        puts 'Going back to main page'
-        sleep(4)
-        wait.until { @driver.find_element(id: 'footer-copyright').displayed? }
-        animes.push([day, date, anime_name, episode, synopsys])
+        animes.push([day, date, anime_name, episode])
       end
     end
     animes
   rescue StandardError => e
-    puts '----------------------------------------------ERROR----------------------------------------------'.red
+    puts ('-' * 46 + 'ERROR' + '-' * 46).red
     puts e.to_s.red
     puts 'Unfortunately an error occured and could not get the full list, returning what could be salvaged'.red
-    puts '-------------------------------------------------------------------------------------------------'.red
+    puts ('-' * 97).red
 
     @driver.close if @driver.window_handles.length.positive?
     animes
@@ -69,7 +56,6 @@ class AnimeParser
     longest_name_length = longest_name_length(animes)
     animes.each do |anime|
       puts anime[2].yellow + ' ' * (longest_name_length - anime[2].length + 3) + anime[3] + ' < ' + anime[0] + ' ' + anime[1]
-      puts anime[4]
       puts ('_' * longest_name_length + '_' * 24).green
     end
   end
